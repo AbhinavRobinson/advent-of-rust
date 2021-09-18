@@ -2,6 +2,7 @@ mod test;
 
 use std::ops::RangeInclusive;
 
+#[derive(PartialEq, Debug)]
 pub struct PasswordPolicy {
     byte: u8,
     range: RangeInclusive<usize>,
@@ -17,4 +18,9 @@ impl PasswordPolicy {
                 .count(),
         )
     }
+
+}
+
+pub fn parse_input(input: &str) -> anyhow::Result<(PasswordPolicy, &str)> {
+    todo!()
 }

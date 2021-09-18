@@ -1,6 +1,6 @@
 #[cfg(test)]
 
-use super::PasswordPolicy;
+use super::{PasswordPolicy, parse_input};
 
 #[test]
 fn test_is_valid() {
@@ -14,4 +14,18 @@ fn test_is_valid() {
   // Falsy
   assert!(!pp.is_valid("b"), "No a's");
   assert!(!pp.is_valid("baaaa"),  "Too Many a's");
+}
+
+#[test]
+fn test_parse_input() {
+  assert!(
+    parse_input("1-3 a: banana").unwrap() == 
+      (
+        PasswordPolicy {
+          range: 1..=3,
+          byte: b'a',
+        }, "banana"
+      ), 
+    "parsing failed!"
+  );
 }

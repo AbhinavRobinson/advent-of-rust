@@ -1,10 +1,6 @@
 mod policy;
 use policy::*;
 
-fn parse_input(input: &str) -> anyhow::Result<(PasswordPolicy, &str)> {
-    todo!()
-}
-
 fn main() -> anyhow::Result<()> {
     let count  = include_str!("input.txt")
     .lines()
