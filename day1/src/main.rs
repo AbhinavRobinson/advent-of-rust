@@ -2,16 +2,16 @@ use anyhow::Result;
 use itertools::Itertools;
 
 fn main() -> anyhow::Result<()> {
-    let input: Vec<i64> = include_str!("input.txt")
+    let x: i64 = 3869;
+    let (a, b, c) = include_str!("input.txt")
         .split('\n')
         .map(str::parse::<i64>)
-        .collect::<Result<Vec<_>, _>>()?;
+        .collect::<Result<Vec<_>, _>>()?
+        .into_iter()
+        .tuple_combinations()
+        .find(|(a, b, c)| a + b + c == x)
+        .expect(&("No 3 numbers with sum ".to_owned()+&x.to_string()));
 
-    let result = pair_sum_is_x(&input, 3488);
-    dbg!(result);
+    dbg!((a, b, c));
     Ok(())
-}
-
-fn pair_sum_is_x(s: &[i64], x: i64) -> Option<(&i64, &i64)> {
-    s.iter().tuple_combinations().find(|(a, b)| *a + *b == x)
 }
