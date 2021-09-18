@@ -6,7 +6,7 @@ struct PasswordPolicy {
 }
 
 impl PasswordPolicy {
-    fn isValid(&self, password: &str) -> bool {
+    fn is_valid(&self, password: &str) -> bool {
         todo!()
     }
 }
@@ -16,7 +16,14 @@ fn parse_input(input: &str) -> anyhow::Result<(PasswordPolicy, &str)> {
 }
 
 fn main() -> anyhow::Result<()> {
-    let input  = include_str!("input.txt");
+    let count  = include_str!("input.txt")
+    .lines()
+    .map(parse_input)
+    .map(Result::unwrap)
+    .filter(|(policy, password)| policy.is_valid(password))
+    .count();
+
+    println!("{} passwords are valid", count);
 
     Ok(())
 }
