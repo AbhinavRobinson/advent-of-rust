@@ -1,46 +1,46 @@
 mod test;
 
-use std::ops::RangeInclusive;
-
 #[derive(PartialEq, Debug)]
 pub struct PasswordPolicy {
-    byte: u8,
-    range: RangeInclusive<usize>,
+	byte: u8,
+	positions: [usize; 2],
 }
 
 impl PasswordPolicy {
-    pub fn is_valid(&self, password: &str) -> bool {
-        self.range.contains(
-            &password
-                .as_bytes()
-                .iter()
-                .filter(|&b| *b == self.byte)
-                .count(),
-        )
-    }
+	pub fn is_valid(&self, password: &str) -> bool {
+		self.positions
+			.iter()
+			.copied()
+			.filter(|&index| password.as_bytes()[index] == self.byte)
+			.count()
+			== 1
+	}
 }
 
 pub fn parse_input(input: &str) -> anyhow::Result<(PasswordPolicy, &str)> {
-    peg::parser! {
-      grammar parser() for str {
-        rule number() -> usize
-          = n:$(['0'..='9']+) { n.parse().unwrap() }
+	peg::parser! {
+		grammar parser() for str {
+			rule number() -> usize
+				= n:$(['0'..='9']+) { n.parse().unwrap() }
 
-        rule range() -> RangeInclusive<usize>
-          = min:number() "-" max:number() { min..=max }
+			rule position() -> usize
+				= n:number() { n - 1 }
 
-        rule byte() -> u8
-          = letter:$(['a'..='z']) { letter.as_bytes()[0] }
+			rule positions() -> [usize; 2]
+				= first:position() "-" second:position() { [first, second] }
 
-        rule password() -> &'input str
-          = letters:$([_]*) { letters }
+			rule byte() -> u8
+				= letter:$(['a'..='z']) { letter.as_bytes()[0] }
 
-        pub(crate) rule line() -> (PasswordPolicy, &'input str)
-          = range:range() " " byte:byte() ": " password:password() {
-              (PasswordPolicy { byte, range }, password)
-          }
-      }
-    }
+			rule password() -> &'input str
+				= letters:$([_]*) { letters }
 
-    Ok(parser::line(input)?)
+			pub(crate) rule line() -> (PasswordPolicy, &'input str)
+				= positions:positions() " " byte:byte() ": " password:password() {
+					(PasswordPolicy { positions, byte }, password)
+				}
+		}
+	}
+
+	Ok(parser::line(input)?)
 }
