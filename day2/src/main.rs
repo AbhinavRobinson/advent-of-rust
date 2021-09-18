@@ -1,15 +1,5 @@
-use std::ops::RangeInclusive;
-
-struct PasswordPolicy {
-    byte: u8,
-    range: RangeInclusive<usize>,
-}
-
-impl PasswordPolicy {
-    fn is_valid(&self, password: &str) -> bool {
-        todo!()
-    }
-}
+mod policy;
+use policy::*;
 
 fn parse_input(input: &str) -> anyhow::Result<(PasswordPolicy, &str)> {
     todo!()
