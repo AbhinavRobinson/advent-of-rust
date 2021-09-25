@@ -66,7 +66,25 @@ impl Map {
     }
 
     fn get(&self, pos: Vec2) -> Tile {
-        todo!()
+        self.index(pos).map(|i| self.tiles[i]).unwrap_or_default()
+    }
+
+    fn normalize_pos(&self, pos: Vec2) -> Option<Vec2> {
+        if pos.y < 0 || pos.y >= self.size.y {
+            None
+        } else {
+            let x = if pos.x < 0 {
+                self.size.x - (pos.x % self.size.x)
+            } else {
+                pos.x % self.size.x
+            };
+            Some((x, pos.y).into())
+        }
+    }
+
+    fn index(&self, pos: Vec2) -> Option<usize> {
+        self.normalize_pos(pos)
+            .map(|pos| (pos.x + pos.y * self.size.x) as _)
     }
 }
 
