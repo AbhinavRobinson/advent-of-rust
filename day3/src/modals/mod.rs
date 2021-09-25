@@ -7,8 +7,8 @@ mod test;
 /// Vector-2d are i64 2d coordinate type {x,y}
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Vec2 {
-    x: i64,
-    y: i64,
+    pub x: i64,
+    pub y: i64,
 }
 
 impl From<(i64, i64)> for Vec2 {
