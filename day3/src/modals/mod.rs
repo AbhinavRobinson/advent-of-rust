@@ -75,11 +75,8 @@ impl Map {
         if pos.y < 0 || pos.y >= self.size.y {
             None
         } else {
-            let x = if pos.x < 0 {
-                self.size.x - (pos.x % self.size.x)
-            } else {
-                pos.x % self.size.x
-            };
+            let x = pos.x % self.size.x;
+            let x = if x < 0 { self.size.x + x } else { x };
             Some((x, pos.y).into())
         }
     }
