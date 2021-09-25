@@ -1,3 +1,5 @@
+use core::panic;
+
 mod test;
 
 /// coordiantes {x,y}
@@ -45,8 +47,8 @@ impl std::fmt::Debug for Tile {
 /// ---
 /// Map type for set of tiles from input
 pub struct Map {
-    size: Vec2,
-    tiles: Vec<Tile>,
+    pub size: Vec2,
+    pub tiles: Vec<Tile>,
 }
 
 impl Map {
@@ -84,6 +86,34 @@ impl Map {
     pub fn index(&self, pos: Vec2) -> Option<usize> {
         self.normalize_pos(pos)
             .map(|pos| (pos.x + pos.y * self.size.x) as _)
+    }
+
+    pub fn parse(input: &[u8]) -> Self {
+        let mut cols = 0;
+        let mut rows = 1;
+        for &c in input.iter() {
+            if c == b'\n' {
+                rows += 1;
+                cols = 0;
+            } else {
+                cols += 1;
+            }
+        }
+
+        let mut iter = input.iter().copied();
+        let mut map = Self::new((cols, rows).into());
+        for row in 0..map.size.y {
+            for col in 0..map.size.x {
+                let tile = match iter.next() {
+                    Some(b'.') => Tile::Open,
+                    Some(b'#') => Tile::Tree,
+                    c => panic!("Expected '.' or '#', but got: {:?}", c),
+                };
+                map.set((col, row).into(), tile);
+            }
+            iter.next();
+        }
+        map
     }
 }
 
