@@ -40,3 +40,44 @@ impl std::fmt::Debug for Tile {
         write!(f, "{}", c)
     }
 }
+
+/// Map - Contains tiles of Tree || Empty Space
+/// ---
+/// Map type for set of tiles from input
+struct Map {
+    size: Vec2,
+    tiles: Vec<Tile>,
+}
+
+impl Map {
+    fn new(size: Vec2) -> Self {
+        let num_tiles = size.x * size.y;
+        Self {
+            size,
+            tiles: (0..num_tiles)
+                .into_iter()
+                .map(|_| Default::default())
+                .collect(),
+        }
+    }
+
+    fn set(&self, pos: Vec2, tile: Tile) {
+        todo!()
+    }
+
+    fn get(&self, pos: Vec2) -> Tile {
+        todo!()
+    }
+}
+
+impl std::fmt::Debug for Map {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for row in 0..self.size.y {
+            for col in 0..self.size.x {
+                write!(f, "{:?}", self.get((col, row).into()))?;
+            }
+            writeln!(f)?;
+        }
+        Ok(())
+    }
+}
