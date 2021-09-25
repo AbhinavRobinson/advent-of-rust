@@ -2,7 +2,7 @@ mod test;
 
 /// coordiantes {x,y}
 /// ---
-/// Description - Vector-2d are i64 2d coordinate type {x,y}
+/// Vector-2d are i64 2d coordinate type {x,y}
 #[derive(Debug, Clone, Copy, PartialEq)]
 struct Vec2 {
     x: i64,
@@ -16,6 +16,9 @@ impl From<(i64, i64)> for Vec2 {
     }
 }
 
+/// tile '.' || '#' for Open || Tree
+/// ---
+/// Tile of map which can either be tree or empty.
 #[derive(Clone, Copy, PartialEq)]
 enum Tile {
     Open,
@@ -25,5 +28,15 @@ enum Tile {
 impl Default for Tile {
     fn default() -> Self {
         Self::Open
+    }
+}
+
+impl std::fmt::Debug for Tile {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let c = match self {
+            Tile::Open => '.',
+            Tile::Tree => '#',
+        };
+        write!(f, "{}", c)
     }
 }
