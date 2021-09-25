@@ -28,3 +28,41 @@ fn test_index() {
     assert_eq!(m.index((0, 1).into()), Some(3));
     assert_eq!(m.index((2, 1).into()), Some(5));
 }
+
+#[test]
+fn test_generate_itinerary() {
+    assert_eq!(
+        &Map::generate_itinerary(&Map::new((5, 5).into()), (1, 1).into()),
+        &[
+            (0, 0).into(),
+            (1, 1).into(),
+            (2, 2).into(),
+            (3, 3).into(),
+            (4, 4).into(),
+        ],
+        "right 1 down 1, 5x5 map"
+    );
+
+    assert_eq!(
+        &Map::generate_itinerary(&Map::new((5, 5).into()), (3, 1).into()),
+        &[
+            (0, 0).into(),
+            (3, 1).into(),
+            (6, 2).into(),
+            (9, 3).into(),
+            (12, 4).into(),
+        ],
+        "right 3 down 1, 5x5 map"
+    );
+
+    assert_eq!(
+        &Map::generate_itinerary(&Map::new((5, 5).into()), (2, 2).into()),
+        &[(0, 0).into(), (2, 2).into(), (4, 4).into(),],
+        "right 2 down 2, 5x5 map"
+    );
+    assert_eq!(
+        &Map::generate_itinerary(&Map::new((9, 9).into()), (2, 5).into()),
+        &[(0, 0).into(), (2, 5).into(),],
+        "right 2 down 5, 9x9 map"
+    )
+}

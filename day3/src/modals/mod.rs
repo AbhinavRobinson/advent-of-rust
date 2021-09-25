@@ -1,4 +1,5 @@
 use core::panic;
+use std::ops::AddAssign;
 
 mod test;
 
@@ -15,6 +16,13 @@ impl From<(i64, i64)> for Vec2 {
     /// Converts i64 tuple to Vec2 type.
     fn from((x, y): (i64, i64)) -> Self {
         Self { x, y }
+    }
+}
+
+impl AddAssign for Vec2 {
+    fn add_assign(&mut self, rhs: Self) {
+        self.x += rhs.x;
+        self.y += rhs.y;
     }
 }
 
@@ -114,6 +122,17 @@ impl Map {
             iter.next();
         }
         map
+    }
+
+    pub fn generate_itinerary(map: &Map, delta: Vec2) -> Vec<Vec2> {
+        let mut pos = Vec2::from((0, 0));
+        let mut res: Vec<_> = Default::default();
+
+        while map.normalize_pos(pos).is_some() {
+            res.push(pos);
+            pos += delta;
+        }
+        res
     }
 }
 
