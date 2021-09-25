@@ -4,7 +4,7 @@ mod test;
 /// ---
 /// Vector-2d are i64 2d coordinate type {x,y}
 #[derive(Debug, Clone, Copy, PartialEq)]
-struct Vec2 {
+pub struct Vec2 {
     x: i64,
     y: i64,
 }
@@ -20,7 +20,7 @@ impl From<(i64, i64)> for Vec2 {
 /// ---
 /// Tile of map which can either be tree or empty.
 #[derive(Clone, Copy, PartialEq)]
-enum Tile {
+pub enum Tile {
     Open,
     Tree,
 }
@@ -44,13 +44,13 @@ impl std::fmt::Debug for Tile {
 /// Map - Contains tiles of Tree || Empty Space
 /// ---
 /// Map type for set of tiles from input
-struct Map {
+pub struct Map {
     size: Vec2,
     tiles: Vec<Tile>,
 }
 
 impl Map {
-    fn new(size: Vec2) -> Self {
+    pub fn new(size: Vec2) -> Self {
         let num_tiles = size.x * size.y;
         Self {
             size,
@@ -61,15 +61,17 @@ impl Map {
         }
     }
 
-    fn set(&self, pos: Vec2, tile: Tile) {
-        todo!()
+    pub fn set(&mut self, pos: Vec2, tile: Tile) {
+        if let Some(index) = self.index(pos) {
+            self.tiles[index] = tile
+        }
     }
 
-    fn get(&self, pos: Vec2) -> Tile {
+    pub fn get(&self, pos: Vec2) -> Tile {
         self.index(pos).map(|i| self.tiles[i]).unwrap_or_default()
     }
 
-    fn normalize_pos(&self, pos: Vec2) -> Option<Vec2> {
+    pub fn normalize_pos(&self, pos: Vec2) -> Option<Vec2> {
         if pos.y < 0 || pos.y >= self.size.y {
             None
         } else {
@@ -82,7 +84,7 @@ impl Map {
         }
     }
 
-    fn index(&self, pos: Vec2) -> Option<usize> {
+    pub fn index(&self, pos: Vec2) -> Option<usize> {
         self.normalize_pos(pos)
             .map(|pos| (pos.x + pos.y * self.size.x) as _)
     }
