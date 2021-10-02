@@ -4,6 +4,8 @@ use modals::{Map, Tile, Vec2};
 fn main() {
     let map = Map::parse(include_bytes!("input.txt"));
 
+    println!("{:?}", map);
+
     // from the problem statement
     let deltas: &[Vec2] = &[
         (1, 1).into(),
@@ -12,6 +14,7 @@ fn main() {
         (7, 1).into(),
         (1, 2).into(),
     ];
+
     let hit = deltas
         .iter()
         .copied()
