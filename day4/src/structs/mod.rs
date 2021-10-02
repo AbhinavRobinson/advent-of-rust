@@ -5,6 +5,7 @@ pub struct Year(pub(crate) u64);
 pub enum Length {
     Cm(u64),
     In(u64),
+    Unspecified(u64),
 }
 
 #[derive(Clone, Copy, PartialEq, Debug)]

@@ -1,7 +1,7 @@
 use crate::structs::{Color, Error, Length, Passport, PassportBuilder, Year, ID};
 
 impl<'a> PassportBuilder<'a> {
-    fn build(self) -> Result<Passport<'a>, Error> {
+    pub fn build(self) -> Result<Passport<'a>, Error> {
         macro_rules! build {
         (
           required => {
@@ -32,7 +32,7 @@ impl<'a> PassportBuilder<'a> {
             },
         }
     }
-    fn parse(input: &'a str) -> Self {
+    pub fn parse(input: &'a str) -> Self {
         let mut b: Self = Default::default();
 
         peg::parser! {
@@ -87,12 +87,13 @@ impl<'a> PassportBuilder<'a> {
                 rule length() -> Length
                     = num:num() "cm" { Length::Cm(num) }
                     / num:num() "in" { Length::In(num) }
+                    / num:num() { Length::Unspecified(num) }
 
                 rule num() -> u64
                     = s:$(['0'..='9']+) { s.parse().unwrap() }
 
                 rule id() -> ID<'input>
-                    = s:$(['0'..='9']+) { ID(s) }
+                    = s:$(['0'..='9' | 'a'..='z' | '#']+) { ID(s) }
             }
         }
 
