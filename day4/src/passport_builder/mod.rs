@@ -32,6 +32,73 @@ impl<'a> PassportBuilder<'a> {
             },
         }
     }
+    fn parse(input: &'a str) -> Self {
+        let mut b: Self = Default::default();
+
+        peg::parser! {
+            grammar parser() for str {
+
+                pub(crate) rule root(b: &mut PassportBuilder<'input>)
+                    = (field(b) separator()*)* ![_]
+
+                rule separator()
+                    = ['\n' | ' ']
+
+                rule field(b: &mut PassportBuilder<'input>)
+                    // years
+                    = byr(b) / iyr(b) / eyr(b)
+                    // height
+                    / hgt(b)
+                    // colors
+                    / hcl(b) / ecl(b)
+                    // IDs
+                    / pid(b) / cid(b)
+
+                rule byr(b: &mut PassportBuilder<'input>)
+                    = "byr:" year:year() { b.birth_year = Some(year) }
+
+                rule iyr(b: &mut PassportBuilder<'input>)
+                    = "iyr:" year:year() { b.issue_year = Some(year) }
+
+                rule eyr(b: &mut PassportBuilder<'input>)
+                    = "eyr:" year:year() { b.expiration_year = Some(year) }
+
+                rule hgt(b: &mut PassportBuilder<'input>)
+                    = "hgt:" height:length() { b.height = Some(height) }
+
+                rule pid(b: &mut PassportBuilder<'input>)
+                    = "pid:" id:id() { b.passport_id = Some(id) }
+
+                rule cid(b: &mut PassportBuilder<'input>)
+                    = "cid:" id:id() { b.country_id = Some(id) }
+
+                rule hcl(b: &mut PassportBuilder<'input>)
+                    = "hcl:" color:color() { b.hair_color = Some(color) }
+
+                rule ecl(b: &mut PassportBuilder<'input>)
+                    = "ecl:" color:color() { b.eye_color = Some(color) }
+
+                rule year() -> Year
+                    = num:num() { Year(num) }
+
+                rule color() -> Color<'input>
+                    = s:$((!separator()[_])*) { Color(s) }
+
+                rule length() -> Length
+                    = num:num() "cm" { Length::Cm(num) }
+                    / num:num() "in" { Length::In(num) }
+
+                rule num() -> u64
+                    = s:$(['0'..='9']+) { s.parse().unwrap() }
+
+                rule id() -> ID<'input>
+                    = s:$(['0'..='9']+) { ID(s) }
+            }
+        }
+
+        parser::root(input, &mut b).unwrap_or_else(|e| panic!("Could not parse {}: {}", input, e));
+        b
+    }
 }
 
 #[test]
